@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transfer_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sender_id')->constrained('users');
-            $table->foreignId('reciever_id')->constrained('users');
+            $table->foreignId('receiver_id')->constrained('users');
             $table->string('transaction_code');
             $table->timestamps();
         });
