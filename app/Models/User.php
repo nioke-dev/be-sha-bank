@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use function Termwind\ask;
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -20,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'profile_picture',
+        'ktp',
+        'verified'
     ];
 
     /**
