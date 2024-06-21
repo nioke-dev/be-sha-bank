@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             PaymentMethodSeeder::class,
             OperatorCardSeeder::class,
-            DataPlanSeeder::class
+            DataPlanSeeder::class,
+            TransactionTypeSeeder::class
         ]);
     }
 }
