@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -68,6 +69,13 @@ class AuthController extends Controller
             ]);
 
             DB::commit();
+            $token = JWTAuth::attempt(['email' => $request->email, 'password' => $request->password]);
+            $userResponse = getUser($request->email);
+            $userResponse->token = $token;
+            $userResponse->token_expires_in = Auth::factory()->getTTL() * 60;
+            $userResponse->token_type = 'bearer';
+
+            return response()->json($userResponse);
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['message' => $th->getMessage()], 500);
@@ -96,7 +104,7 @@ class AuthController extends Controller
 
             $userResponse = getUser($request->email);
             $userResponse->token = $token;
-            $userResponse->token_expires_in = auth()->factory()->getTTL() * 60;
+            $userResponse->token_expires_in = Auth::factory()->getTTL() * 60;
             $userResponse->token_type = 'bearer';
 
             return response()->json($userResponse);
