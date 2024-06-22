@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Melihovv\Base64ImageDecoder\Base64ImageDecoder;
 use Illuminate\Support\Str;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
@@ -68,6 +70,32 @@ class AuthController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
+            return response()->json(['message' => $th->getMessage()], 500);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        $validator = Validator::make($credentials, [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->messages()], 400);
+        }
+
+        try {
+            $token = JWTAuth::attempt($credentials);
+
+            if (!$token) {
+                return response()->json(['message' => 'Login credentials are invalid']);
+            }
+
+            return $token;
+        } catch (JWtException $th) {
             return response()->json(['message' => $th->getMessage()], 500);
         }
     }
