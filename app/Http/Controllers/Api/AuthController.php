@@ -99,7 +99,7 @@ class AuthController extends Controller
             $token = JWTAuth::attempt($credentials);
 
             if (!$token) {
-                return response()->json(['message' => 'Login credentials are invalid']);
+                return response()->json(['message' => 'Login credentials are invalid'], 409);
             }
 
             $userResponse = getUser($request->email);
@@ -111,6 +111,13 @@ class AuthController extends Controller
         } catch (JWtException $th) {
             return response()->json(['message' => $th->getMessage()], 500);
         }
+    }
+
+    public function logout()
+    {
+        auth()->logout(true);
+
+        return response()->json(['message' => 'Log out success']);
     }
 
     private function generateCardNumber($length)
